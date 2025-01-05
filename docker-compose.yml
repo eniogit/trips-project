@@ -1,0 +1,61 @@
+services:
+  redis:
+    image: bitnami/redis
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASSWORD: redispass
+    healthcheck:
+      test: ["CMD", "redis-cli","ping"]
+      interval: 1s
+      timeout: 10s
+      retries: 10
+
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: toor
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d app -U root"]
+      interval: 1s
+      timeout: 10s
+      retries: 10
+
+  backend:
+    build: 
+      context: ./backend/
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      redis: 
+        condition: service_healthy
+      db: 
+        condition: service_healthy
+    environment:
+      PORT: 8080
+      API_KEY: 
+      API_URL: https://z0qw1e7jpd.execute-api.eu-west-1.amazonaws.com/default
+      DATABASE_HOST: db
+      DATABASE_USER: root
+      DATABASE_PASSWORD: toor
+      DATABASE_NAME: app
+      DATABASE_PORT: 5432
+      SECRET: secret
+      LOG_LEVEL: info
+      REDIS_URL: redis://:redispass@redis:6379
+
+  frontend:
+    build: 
+      context: ./frontend/
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_BASE_URL=http://localhost:8080
+    ports:
+      - "3000:3000"
+    environment:
+      BASE_URL: http://backend:8080

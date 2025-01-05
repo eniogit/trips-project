@@ -1,0 +1,18 @@
+meta {
+  name: Me
+  type: http
+  seq: 7
+}
+
+get {
+  url: http://localhost:8080/users/me
+  body: none
+  auth: none
+}
+
+body:json {
+  {
+    "username": "eniovrushi",
+    "password": "123456789"
+  }
+}

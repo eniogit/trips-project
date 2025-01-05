@@ -1,0 +1,17 @@
+meta {
+  name: Save trip
+  type: http
+  seq: 9
+}
+
+post {
+  url: http://localhost:8080/trips/saved
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": "22b200f8-3b56-4e62-b6d7-cd68cb3adc78"
+  }
+}

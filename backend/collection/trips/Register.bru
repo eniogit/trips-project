@@ -1,0 +1,18 @@
+meta {
+  name: Register
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:8080/users/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "eniovrushi",
+    "password": "123456789"
+  }
+}
